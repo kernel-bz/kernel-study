@@ -1,7 +1,7 @@
 #CONFIG_MODULE_SIG=n
 #CONFIG_MODULE_SIG_ALL=n
 
-obj-m := hello.o
+obj-m := my-timer.o
 VER := $1
 ARCH := riscv
 ARCC := riscv64-unknown-linux-gnu-
