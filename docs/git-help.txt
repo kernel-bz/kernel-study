@@ -1,0 +1,18 @@
+
+//git 설치
+$ sudo apt-get install git git-gui git-email
+
+//git 설치후 사용자 정보 등록 하기
+$ git config --global user.email "your-id@email.com"
+$ git config --global user.name "your-name"
+$ git config --global core.editor "vim"
+
+//git Documentation
+https://git-scm.com/doc
+
+//Git - Patch 파일 만들기 & 적용하기
+https://codechacha.com/ko/git-patch/
+
+//Git: send patch using send-email & Gmail
+https://blog.revathskumar.com/2019/08/git-send-patch-using-send-email-and-gmail.html
+
