@@ -6,7 +6,7 @@ obj-m := my-timer.o
 VER := $1
 ARCH := riscv
 ARCC := riscv64-unknown-linux-gnu-
-KDIR := /home/riscv/kernel/build/build-$(VER)-riscv-origin
+KDIR := /home/riscv/Projects/kernel/build/build-$(VER)-riscv-origin
 
 MRUN := $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(ARCC)
 
