@@ -1,0 +1,10 @@
+
+RISC-V SiFive: https://www.sifive.com/ 
+
+RISC-V Compiler(toolchain): https://github.com/riscv-collab/riscv-gnu-toolchain
+
+
+
+arm/arm64 개발환경(라즈베리파이): 
+
+https://www.raspberrypi.com/documentation/computers/linux_kernel.html
