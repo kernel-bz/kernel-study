@@ -2,10 +2,11 @@
 #CONFIG_MODULE_SIG_ALL=n
 
 obj-m := hello.o
+#VER := v6.2
 VER := $1
 ARCH := riscv
 ARCC := riscv64-unknown-linux-gnu-
-KDIR := /home/risc-v/kernel/build/build-$(VER)-riscv-origin
+KDIR := /home/riscv/kernel/build/build-$(VER)-riscv-origin
 
 MRUN := $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(ARCC)
 
