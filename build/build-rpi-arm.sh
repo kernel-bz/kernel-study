@@ -21,6 +21,7 @@ CMD=$2
 ARCH="arm"
 BOARD="rpi"
 COMPILER="arm-linux-gnueabi-"
+#COMPILER="arm-linux-gnueabihf-"
 
 #For Raspberry Pi 2, 3, 3+ and Zero 2 W, and Raspberry Pi Compute Modules 3 and 3+
 KERNEL=kernel7
