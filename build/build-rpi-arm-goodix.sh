@@ -19,12 +19,13 @@ CMD=$2
 #CMD="build"
 SDEV=$3
 
-ARCH="arm64"
-BOARD="rpi"
-COMPILER="aarch64-linux-gnu-"
+ARCH="arm"
+BOARD="rpi-goodix"
+#COMPILER="arm-linux-gnueabi-"
+COMPILER="arm-linux-gnueabihf-"
 
-# For Raspberry Pi 3, 3+, 4, 400 and Zero 2 W, and Raspberry Pi Compute Modules 3, 3+ and 4:
-KERNEL=kernel8
+#For Raspberry Pi 2, 3, 3+ and Zero 2 W, and Raspberry Pi Compute Modules 3 and 3+
+KERNEL=kernel7
 
 BUILD_PATH="../build/build-$VER-$ARCH-$BOARD"
 LOG_PATH="../build/log"
@@ -45,8 +46,10 @@ if [ ! -d $LOG_PATH ]; then
 fi
 
 if [ ! -f $BUILD_PATH/.config ]; then
-    echo "make bcm2711_defconfig"
-    make ARCH=$ARCH O=$BUILD_PATH bcm2711_defconfig 
+    echo "make bcm2709_defconfig (pi3)"
+    make ARCH=$ARCH O=$BUILD_PATH bcm2709_defconfig 
+    #echo "make bcm2835_defconfig (pi3b+)"
+    #make ARCH=$ARCH O=$BUILD_PATH bcm2835_defconfig 
 fi
 
 if [ $CMD == "log" ]; then
@@ -60,7 +63,7 @@ elif [ $CMD == "tag" ]; then
     echo "set tags=$TAG_PATH" > ~/.vimrc
 
 elif [ $CMD == "build" ]; then
-    make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH Image modules dtbs
+    make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH zImage modules dtbs
 
 elif [ $CMD == "install" ]; then                                                
                                                                                 
@@ -79,8 +82,8 @@ sudo make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH \
                 INSTALL_MOD_PATH=mnt/rootfs modules_install           
 
 sudo cp $BUILD_PATH/mnt/bootfs/$KERNEL.img $BUILD_PATH/mnt/bootfs/$KERNEL-backup.img
-sudo cp $BUILD_PATH/arch/$ARCH/boot/Image $BUILD_PATH/mnt/bootfs/$KERNEL.img     
-sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/broadcom/*.dtb $BUILD_PATH/mnt/bootfs/   
+sudo cp $BUILD_PATH/arch/$ARCH/boot/zImage $BUILD_PATH/mnt/bootfs/$KERNEL.img     
+sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/*.dtb $BUILD_PATH/mnt/bootfs/   
 sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/*.dtb* $BUILD_PATH/mnt/bootfs/overlays/
 sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/README $BUILD_PATH/mnt/bootfs/overlays/
 

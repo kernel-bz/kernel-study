@@ -20,7 +20,7 @@ CMD=$2
 SDEV=$3
 
 ARCH="arm64"
-BOARD="rpi"
+BOARD="rpi-goodix"
 COMPILER="aarch64-linux-gnu-"
 
 # For Raspberry Pi 3, 3+, 4, 400 and Zero 2 W, and Raspberry Pi Compute Modules 3, 3+ and 4:

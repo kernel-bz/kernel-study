@@ -17,11 +17,12 @@ START_TIME=`date +%s`
 VER=$1
 CMD=$2
 #CMD="build"
+SDEV=$3
 
 ARCH="arm"
 BOARD="rpi"
-COMPILER="arm-linux-gnueabi-"
-#COMPILER="arm-linux-gnueabihf-"
+#COMPILER="arm-linux-gnueabi-"
+COMPILER="arm-linux-gnueabihf-"
 
 #For Raspberry Pi 2, 3, 3+ and Zero 2 W, and Raspberry Pi Compute Modules 3 and 3+
 KERNEL=kernel7
@@ -45,8 +46,10 @@ if [ ! -d $LOG_PATH ]; then
 fi
 
 if [ ! -f $BUILD_PATH/.config ]; then
-    echo "make defconfig"
+    echo "make bcm2709_defconfig (pi3)"
     make ARCH=$ARCH O=$BUILD_PATH bcm2709_defconfig 
+    #echo "make bcm2835_defconfig (pi3b+)"
+    #make ARCH=$ARCH O=$BUILD_PATH bcm2835_defconfig 
 fi
 
 if [ $CMD == "log" ]; then
@@ -66,29 +69,26 @@ elif [ $CMD == "install" ]; then
                                                                                 
 # $lsblk
 # sdb      8:16   1  29.7G  0 disk
-# ├─sdb1   8:17   1   2.4G  0 part
-# ├─sdb2   8:18   1     1K  0 part
-# ├─sdb5   8:21   1    32M  0 part /media/jungjaejoon/SETTINGS
-# ├─sdb6   8:22   1   256M  0 part /media/jungjaejoon/boot (fat32)
-# └─sdb7   8:23   1    27G  0 part /media/jungjaejoon/root (ext4)
+# ├─sdb1   8:17   1   256M  0 part /media/jungjaejoon/bootfs (fat32)
+# └─sdb2   8:18   1  29.5G  0 part /media/jungjaejoon/rootfs (ext4)
 
 mkdir $BUILD_PATH/mnt                                                           
-mkdir $BUILD_PATH/mnt/fat32                                                     
-mkdir $BUILD_PATH/mnt/ext4                                                      
-sudo mount /dev/sdb6 $BUILD_PATH/mnt/fat32                                      
-sudo mount /dev/sdb7 $BUILD_PATH/mnt/ext4                                       
+mkdir $BUILD_PATH/mnt/bootfs                                                     
+mkdir $BUILD_PATH/mnt/rootfs                                                      
+sudo mount /dev/${SDEV}1 $BUILD_PATH/mnt/bootfs                                      
+sudo mount /dev/${SDEV}2 $BUILD_PATH/mnt/rootfs                                       
                                                                                 
 sudo make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH \
-                INSTALL_MOD_PATH=mnt/ext4 modules_install           
+                INSTALL_MOD_PATH=mnt/rootfs modules_install           
 
-sudo cp $BUILD_PATH/mnt/fat32/$KERNEL.img $BUILD_PATH/mnt/fat32/$KERNEL-backup.img
-sudo cp $BUILD_PATH/arch/$ARCH/boot/zImage $BUILD_PATH/mnt/fat32/$KERNEL.img     
-sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/*.dtb $BUILD_PATH/mnt/fat32/   
-sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/*.dtb* $BUILD_PATH/mnt/fat32/overlays/
-sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/README $BUILD_PATH/mnt/fat32/overlays/
+sudo cp $BUILD_PATH/mnt/bootfs/$KERNEL.img $BUILD_PATH/mnt/bootfs/$KERNEL-backup.img
+sudo cp $BUILD_PATH/arch/$ARCH/boot/zImage $BUILD_PATH/mnt/bootfs/$KERNEL.img     
+sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/*.dtb $BUILD_PATH/mnt/bootfs/   
+sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/*.dtb* $BUILD_PATH/mnt/bootfs/overlays/
+sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/README $BUILD_PATH/mnt/bootfs/overlays/
 
-sudo umount $BUILD_PATH/mnt/fat32                                               
-sudo umount $BUILD_PATH/mnt/ext4
+sudo umount $BUILD_PATH/mnt/bootfs                                               
+sudo umount $BUILD_PATH/mnt/rootfs
 
 else
     make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH $CMD
