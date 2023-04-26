@@ -1,8 +1,10 @@
 #!/bin/bash
-# $1: ver [v5.x]
-# $2: cmd [/menuconfig/log/tag/modules_install/install/clean/distclean/]
-# $3: arch [x86_64/riscv/arm64]
-# $4: board [origin/hifiveu/..]
+# $1: VER   : v5.x
+# $2: ARCH  : arm(32bits), arm64(64bits)
+# $3: BOARD : pi3, pi4
+# $4: BDO   : board option
+# $5: CMD   : build, command, make options 
+# $6: SDEV  : sdcard [sdb, sdc, sdd, ..]
 
 # author: JaeJoon Jung <rgbi3307@nate.com> on the www.kernel.bz
 # refer: https://www.raspberrypi.com/documentation/computers/linux_kernel.html
@@ -15,20 +17,47 @@ CPU_CNT=$(grep processor /proc/cpuinfo | awk '{field=$NF};END{print field+2}')
 START_TIME=`date +%s`
 
 VER=$1
-CMD=$2
-#CMD="build"
-SDEV=$3
+ARCH=$2
+BOARD=$3
+BDO=$4
+CMD=$5
+SDEV=$6
 
-ARCH="arm64"
-BOARD="rpi"
-COMPILER="aarch64-linux-gnu-"
+if [ $ARCH == "arm64" ]; then
+    COMPILER="aarch64-linux-gnu-"
+    KIMG="Image"
+    DTB="broadcom/*.dtb"
+    KERNEL="kernel8"
+    DEFCONFIG="bcm2711_defconfig"
+elif [ $ARCH == "arm" ]; then
+    #COMPILER="arm-linux-gnueabi-"
+    COMPILER="arm-linux-gnueabihf-"
+    KIMG="zImage"
+    DTB="*.dtb"
+    if [ $BOARD == "pi4" ]; then
+        KERNEL="kernel7l"
+        DEFCONFIG="bcm2711_defconfig"
+    else
+        KERNEL="kernel7"
+        DEFCONFIG="bcm2709_defconfig"
+    fi
+else
+    #echo "ARCH $2 must be arm or arm64."
+    #exit 1
+    ARCH="arm"
+    BOARD="pi3"
+    BDO="default"
+    CMD="build"
+    COMPILER="arm-linux-gnueabihf-"
+    KIMG="zImage"
+    DTB="*.dtb"
+    KERNEL="kernel7"
+    DEFCONFIG="bcm2709_defconfig"
+fi
 
-# For Raspberry Pi 3, 3+, 4, 400 and Zero 2 W, and Raspberry Pi Compute Modules 3, 3+ and 4:
-KERNEL=kernel8
-
-BUILD_PATH="../build/build-$VER-$ARCH-$BOARD"
 LOG_PATH="../build/log"
-LOG_FILE="$LOG_PATH/log-$VER-$ARCH-$BOARD.txt"
+BUILD_PATH="../build/build-$VER-$ARCH-$BOARD-$BDO"
+LOG_FILE="$LOG_PATH/log-$VER-$ARCH-$BOARD-$BDO.txt"
 TAG_PATH="$BUILD_PATH/tags"
 STRIP="$COMPILER""strip"
 
@@ -45,8 +74,7 @@ if [ ! -d $LOG_PATH ]; then
 fi
 
 if [ ! -f $BUILD_PATH/.config ]; then
-    echo "make bcm2711_defconfig"
-    make ARCH=$ARCH O=$BUILD_PATH bcm2711_defconfig 
+    make ARCH=$ARCH O=$BUILD_PATH $DEFCONFIG 
 fi
 
 if [ $CMD == "log" ]; then
@@ -60,7 +88,10 @@ elif [ $CMD == "tag" ]; then
     echo "set tags=$TAG_PATH" > ~/.vimrc
 
 elif [ $CMD == "build" ]; then
-    make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH Image modules dtbs
+    make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH $KIMG modules dtbs
+
+elif [ $CMD == "strip" ]; then
+    $STRIP -o $BUILD_PATH/vmlinux-stripped $BUILD_PATH/vmlinux
 
 elif [ $CMD == "install" ]; then                                                
                                                                                 
@@ -79,8 +110,8 @@ sudo make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH \
                 INSTALL_MOD_PATH=mnt/rootfs modules_install           
 
 sudo cp $BUILD_PATH/mnt/bootfs/$KERNEL.img $BUILD_PATH/mnt/bootfs/$KERNEL-backup.img
-sudo cp $BUILD_PATH/arch/$ARCH/boot/Image $BUILD_PATH/mnt/bootfs/$KERNEL.img     
-sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/broadcom/*.dtb $BUILD_PATH/mnt/bootfs/   
+sudo cp $BUILD_PATH/arch/$ARCH/boot/$KIMG $BUILD_PATH/mnt/bootfs/$KERNEL.img     
+sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/$DTB $BUILD_PATH/mnt/bootfs/   
 sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/*.dtb* $BUILD_PATH/mnt/bootfs/overlays/
 sudo cp $BUILD_PATH/arch/$ARCH/boot/dts/overlays/README $BUILD_PATH/mnt/bootfs/overlays/
 
@@ -90,8 +121,6 @@ sudo umount $BUILD_PATH/mnt/rootfs
 else
     make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH $CMD
 fi
-
-#$STRIP -o $BUILD_PATH/vmlinux-stripped $BUILD_PATH/vmlinux
 
 END_TIME=`date +%s`
 echo "Total build-time is $((($END_TIME-$START_TIME)/60)) minutes $((($END_TIME-$START_TIME)%60)) seconds"
