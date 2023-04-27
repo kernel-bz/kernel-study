@@ -37,8 +37,8 @@ void my_timer2_callback(struct timer_list *timer)
                 pending = timer_pending(&my_timer1);
                 pr_info("pending: %d\n", pending);
 
-                //del_timer_sync(&my_timer1);
-                timer_delete_sync(&my_timer1);
+                del_timer_sync(&my_timer1);
+                //timer_delete_sync(&my_timer1);
 
                 //timer->func = NULL (shutdown)
                 //timer_shutdown_sync(&my_timer1);
@@ -82,10 +82,10 @@ static void __exit my_timer_exit(void)
 {
         pr_info("cleanup_module()...\n");
 
-        //del_timer_sync(&my_timer1);
-        timer_shutdown_sync(&my_timer1);
-        //del_timer_sync(&my_timer2);
-        timer_shutdown_sync(&my_timer2);
+        del_timer_sync(&my_timer1);
+        //timer_shutdown_sync(&my_timer1);
+        del_timer_sync(&my_timer2);
+        //timer_shutdown_sync(&my_timer2);
         
         pr_info("Done: my timer delete.\n");
 }

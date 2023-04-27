@@ -1,10 +1,19 @@
 
 RISC-V SiFive: https://www.sifive.com/ 
-
 RISC-V Compiler(toolchain): https://github.com/riscv-collab/riscv-gnu-toolchain
 
 
-
 arm/arm64 개발환경(라즈베리파이): 
-
 https://www.raspberrypi.com/documentation/computers/linux_kernel.html
+
+//network setup(raspberry pi)
+# route add -net 192.168.100.1 netmask 255.255.255.255 dev eth0
+
+$ route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+default         192.168.10.1    0.0.0.0         UG    303    0        0 wlan0
+link-local      0.0.0.0         255.255.0.0     U     202    0        0 eth0
+192.168.10.0    0.0.0.0         255.255.255.0   U     303    0        0 wlan0
+192.168.100.1   0.0.0.0         255.255.255.255 UH    0      0        0 eth0
+

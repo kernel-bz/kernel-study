@@ -1,20 +1,20 @@
 #CONFIG_MODULE_SIG=n
 #CONFIG_MODULE_SIG_ALL=n
 
-obj-m := kobject-wq.o
-#VER := v6.2
-VER := $1
+obj-m := kobject-example.o
 
-KERNEL := kernel7
+VER := v5.10
 ARCH := arm
-#ARCC := arm-linux-gnueabihf-
-ARCC := arm-linux-gnueabi-
-KDIR := /home/raspi/Projects/kernel/build/build-$(VER)-arm-rpi
-
-#KERNEL := kernel8
 #ARCH := arm64
+BOARD := pi3
+#BOARD := pi4
+BDO := def
+
+ARCC := arm-linux-gnueabihf-
 #ARCC := aarch64-linux-gnu-
-#KDIR := /home/raspi/Projects/kernel/build/build-$(VER)-arm64-rpi
+
+BDIR := build-$(VER)-$(ARCH)-$(BOARD)-$(BDO)
+KDIR := /home/raspi/Projects/kernel/build/$(BDIR)
 
 MRUN := $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(ARCC)
 
