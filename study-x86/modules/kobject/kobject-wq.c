@@ -40,7 +40,7 @@ static ssize_t wq_show(struct kobject *kobj, struct kobj_attribute *attr,
                 show_all_wq_pwq_info();
         }
 
-	return sysfs_emit(buf, "%d\n", var);
+	return sysfs_emit(buf, "%d: See /var/log/kern.log\n", var);
 }
 
 static ssize_t wq_store(struct kobject *kobj, struct kobj_attribute *attr,
@@ -83,7 +83,7 @@ static ssize_t pool_show(struct kobject *kobj, struct kobj_attribute *attr,
                 show_cpu_pool_info();
         }
 
-	return sysfs_emit(buf, "%d\n", var);
+	return sysfs_emit(buf, "%d: See /var/log/kern.log\n", var);
 }
 
 static ssize_t pool_store(struct kobject *kobj, struct kobj_attribute *attr,

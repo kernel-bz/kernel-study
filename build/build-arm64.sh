@@ -57,13 +57,15 @@ elif [ $CMD == "tag" ]; then
         CROSS_COMPILE=$COMPILER \
         ARCH=$ARCH
     echo "set tags=$TAG_PATH" > ~/.vimrc
+
+elif [ $CMD == "strip" ]; then
+	$STRIP -o $BUILD_PATH/vmlinux-stripped $BUILD_PATH/vmlinux
+
 else
     make -j$CPU_CNT O=$BUILD_PATH/ \
         CROSS_COMPILE=$COMPILER \
         ARCH=$ARCH $CMD
 fi
-
-$STRIP -o $BUILD_PATH/vmlinux-stripped $BUILD_PATH/vmlinux
 
 END_TIME=`date +%s`
 echo "Total build-time is $((($END_TIME-$START_TIME)/60)) minutes $((($END_TIME-$START_TIME)%60)) seconds"

@@ -62,6 +62,9 @@ elif [ $CMD == "tag" ]; then
 elif [ $CMD == "build" ]; then
     make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH Image modules dtbs
 
+elif [ $CMD == "strip" ]; then
+    $STRIP -o $BUILD_PATH/vmlinux-stripped $BUILD_PATH/vmlinux
+
 elif [ $CMD == "install" ]; then                                                
                                                                                 
 # $lsblk
@@ -90,8 +93,6 @@ sudo umount $BUILD_PATH/mnt/rootfs
 else
     make -j$CPU_CNT O=$BUILD_PATH/ CROSS_COMPILE=$COMPILER ARCH=$ARCH $CMD
 fi
-
-#$STRIP -o $BUILD_PATH/vmlinux-stripped $BUILD_PATH/vmlinux
 
 END_TIME=`date +%s`
 echo "Total build-time is $((($END_TIME-$START_TIME)/60)) minutes $((($END_TIME-$START_TIME)%60)) seconds"
