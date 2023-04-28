@@ -16,3 +16,8 @@ $ sudo cp arch/arm/boot/dts/overlays/README /boot/overlays/
 
 $ sudo cp /boot/$KERNEL.img /boot/$KERNEL.bak.img
 $ sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
+
+
+$ sudo apt-get install vim universal-ctags
+$ make tags -j5
+echo "set tags=/home/pi/Projects/kernel/linux/tags" > ~/.vimrc
