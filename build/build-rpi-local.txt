@@ -1,0 +1,23 @@
+$ sudo apt install git bc bison flex libssl-dev make
+
+$ git clone --depth=1 --branch rpi-5.10.y https://github.com/raspberrypi/linux
+
+$ cd linux
+$ KERNEL=kernel7
+$ make bcm2709_defconfig
+
+$ make -j4 zImage modules dtbs
+
+$ sudo make modules_install
+
+$ sudo cp arch/arm/boot/dts/*.dtb /boot/
+$ sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/overlays/
+$ sudo cp arch/arm/boot/dts/overlays/README /boot/overlays/
+
+$ sudo cp /boot/$KERNEL.img /boot/$KERNEL.bak.img
+$ sudo cp arch/arm/boot/zImage /boot/$KERNEL.img
+
+
+$ sudo apt-get install vim universal-ctags
+$ make tags -j5
+echo "set tags=/home/pi/Projects/kernel/linux/tags" > ~/.vimrc
