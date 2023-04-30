@@ -18,11 +18,10 @@ void __exit hello1_exit(void) {
     printk("linux-modules: test/hello1.c: hello1_exit().\n");
 }
 
-///module_init(hello1_init);
-///module_exit(hello1_exit);
-/**
+module_init(hello1_init);
+module_exit(hello1_exit);
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("JaeJoon Jung");
 MODULE_DESCRIPTION("A Hello1, World Kernel Module");
 MODULE_VERSION("0.1.1");
-*/
