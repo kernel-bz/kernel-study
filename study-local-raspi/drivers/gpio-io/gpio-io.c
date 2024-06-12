@@ -16,7 +16,8 @@
 #include <linux/err.h>
 
 //LED is connected to this GPIO
-#define GPIO_21 (21)
+//#define GPIO_21 (21)
+#define GPIO_21 (533)	//sys/kernel/debug/gpio
 
 dev_t dev = 0;  //u32
 static struct class *dev_class;
@@ -132,7 +133,9 @@ static int __init gpio_driver_init(void)
         }
 
         /* Creating struct class */
-        if(IS_ERR(dev_class = class_create(THIS_MODULE, "gpio_io_class"))) {
+        //if(IS_ERR(dev_class = class_create(THIS_MODULE, "gpio_io_class"))) {
+	//kernel v6.1 --> v6.6
+        if(IS_ERR(dev_class = class_create("gpio_io_class"))) {
                 pr_err("Cannot create the struct class\n");
                 goto r_class;
         }
@@ -168,7 +171,9 @@ static int __init gpio_driver_init(void)
          ** 
          ** the second argument prevents the direction from being changed.
          */
-        gpio_export(GPIO_21, false);
+        //gpio_export(GPIO_21, false);
+	//kernel v6.1 --> v6.6
+        gpiod_export(gpio_to_desc(GPIO_21), false);
 
         pr_info("Device Driver (gpio-io.ko) Insert...Done!!!\n");
         return 0;
@@ -192,7 +197,10 @@ r_unreg:
  */ 
 static void __exit gpio_driver_exit(void)
 {
-        gpio_unexport(GPIO_21);
+        //gpio_unexport(GPIO_21);
+	//kernel v6.1 --> v6.6
+        gpiod_unexport(gpio_to_desc(GPIO_21));
+
         gpio_free(GPIO_21);
         device_destroy(dev_class, dev);
         class_destroy(dev_class);

@@ -36,10 +36,10 @@ unsigned long old_jiffie = 0;
 #endif
 
 //LED is connected to this GPIO
-#define GPIO_21_OUT (21)
+#define GPIO_21_OUT (21)	//sys/kernel/debug/gpio
 
 //LED is connected to this GPIO
-#define GPIO_25_IN  (25)
+#define GPIO_25_IN  (25)	//sys/kernel/debug/gpio
 
 //GPIO_25_IN value toggle
 unsigned int led_toggle = 0; 
@@ -184,7 +184,9 @@ static int __init gpio_driver_init(void)
         }
 
         /*Creating struct class*/
-        if(IS_ERR(dev_class = class_create(THIS_MODULE, "gpio_int_class"))) {
+        //if(IS_ERR(dev_class = class_create(THIS_MODULE, "gpio_int_class"))) {
+	//kernel v6.1 --> v6.6
+        if(IS_ERR(dev_class = class_create("gpio_int_class"))) {
                 pr_err("Cannot create the struct class\n");
                 goto r_class;
         }
