@@ -185,7 +185,11 @@ static int __init gpio_driver_init(void)
 
         /*Creating struct class*/
         //if(IS_ERR(dev_class = class_create(THIS_MODULE, "gpio_int_class"))) {
+<<<<<<< HEAD
+        //kernel v6.1 --> v6.6
+=======
 	//kernel v6.1 --> v6.6
+>>>>>>> origin/main
         if(IS_ERR(dev_class = class_create("gpio_int_class"))) {
                 pr_err("Cannot create the struct class\n");
                 goto r_class;

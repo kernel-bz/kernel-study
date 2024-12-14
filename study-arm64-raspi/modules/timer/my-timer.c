@@ -35,7 +35,7 @@ void my_timer2_callback(struct timer_list *timer)
                 int pending;
 
                 pending = timer_pending(&my_timer1);
-                pr_info("pending: %d\n", pending);
+                pr_info("timer1 pending: %d\n", pending);
 
                 del_timer_sync(&my_timer1);
                 //timer_delete_sync(&my_timer1);
@@ -44,12 +44,12 @@ void my_timer2_callback(struct timer_list *timer)
                 //timer_shutdown_sync(&my_timer1);
 
                 pending = timer_pending(&my_timer1);
-                pr_info("pending: %d\n", pending);
+                pr_info("timer1 pending: %d\n", pending);
 
                 mod_timer(&my_timer1, jiffies + msecs_to_jiffies(TIMEOUT));
 
                 pending = timer_pending(&my_timer1);
-                pr_info("pending: %d\n", pending);
+                pr_info("timer1 pending: %d\n", pending);
 
                 cnt = 0;
         }
@@ -65,13 +65,13 @@ static int __init my_timer_init(void)
         timer_setup(&my_timer2, my_timer2_callback, 0);
 
         pending = timer_pending(&my_timer1);
-        pr_info("pending: %d\n", pending);      //0
+        pr_info("timer1 pending: %d\n", pending);      //0
 
         mod_timer(&my_timer1, jiffies + msecs_to_jiffies(TIMEOUT));
         mod_timer(&my_timer2, jiffies + msecs_to_jiffies(TIMEOUT));
 
         pending = timer_pending(&my_timer1);
-        pr_info("pending: %d\n", pending);     //1
+        pr_info("timer1 pending: %d\n", pending);     //1
 
         pr_info("Done: my timer setup.\n");
 

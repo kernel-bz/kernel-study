@@ -1,9 +1,9 @@
 obj-m := gpio-io.o
 
-VER := v5.10
+VER := v6.6
 ARCH := arm64
-BOARD := pi4
-BDO := def
+BOARD := pi5
+BDO := hailo
 
 ARCC := aarch64-linux-gnu-
 
