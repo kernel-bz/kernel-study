@@ -6,7 +6,8 @@ obj-m := hello.o
 VER := $1
 ARCH := riscv
 ARCC := riscv64-unknown-linux-gnu-
-KDIR := /home/riscv/Projects/kernel/build/build-$(VER)-riscv-origin
+#KDIR := /home/riscv/Projects/kernel/build/build-$(VER)-riscv-origin
+KDIR := /mnt/sda3/projects/RISCV/StarFive/linux
 
 MRUN := $(MAKE) ARCH=$(ARCH) CROSS_COMPILE=$(ARCC)
 
